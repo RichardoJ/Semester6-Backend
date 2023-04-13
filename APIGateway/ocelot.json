@@ -1,0 +1,104 @@
+{
+  "GlobalConfiguration": {
+    "BaseUrl": "http://ocelotapigw:5003"
+  },
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/user/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "library-user",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/api/user/{everything}",
+      "UpstreamHttpMethod": [ "POST", "DELETE", "PUT", "GET" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/user",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "library-user",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/api/user",
+      "UpstreamHttpMethod": [ "POST", "DELETE" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/paper/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "catalog_service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/api/paper/{everything}",
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/catalog/Storage/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "catalog_service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/api/catalog/Storage/{everything}",
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/catalog/Storage/pdf/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "catalog_service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/api/catalog/Storage/pdf/{everything}",
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/paper/author/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "catalog_service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/api/paper/author/{everything}",
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/publish",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "library-publish",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/api/publish",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/publish/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "library-publish",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/api/publish/{everything}",
+      "UpstreamHttpMethod": [ "POST", "DELETE" ]
+    }
+  ]
+}
+

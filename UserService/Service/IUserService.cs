@@ -1,0 +1,15 @@
+﻿using UserService.Model;
+
+namespace UserService.Service
+{
+    public interface IUserService
+    {
+        public IEnumerable<User> getAllUser();
+        public User getUserById(int id);
+
+        public void addUser(User user);
+
+        public void removeUser(int id);
+
+    }
+}

@@ -1,0 +1,231 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3.11-management
+    container_name: rabbitmq
+    ports:
+      - 15672:15672
+      - 5672:5672
+    volumes:
+        - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+        - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+      - app-networks
+
+  mysqldb-user:
+    container_name: mysqldb-user
+    image: mysql:5.7
+    cap_add:
+      - SYS_NICE
+    restart: always
+    ports:
+      - 3307:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE_USER}
+    volumes:
+      - dbdatauser:/var/lib/mysql
+    networks:
+      - app-networks
+
+  # mysqldb-catalog:
+  #   container_name: mysqldb-catalog
+  #   image: mysql:5.7
+  #   cap_add:
+  #     - SYS_NICE
+  #   restart: always
+  #   ports:
+  #     - 3308:3306
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+  #     - MYSQL_DATABASE=${MYSQL_DATABASE_CATALOG}
+  #   volumes:
+  #     - dbdatacatalog:/var/lib/mysql
+  #   networks:
+  #     - app-networks
+
+  # mysqldb-publish:
+  #   container_name: mysqldb-publish
+  #   image: mysql:5.7
+  #   cap_add:
+  #     - SYS_NICE
+  #   restart: always
+  #   ports:
+  #     - 3309:3306
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+  #     - MYSQL_DATABASE=${MYSQL_DATABASE_PUBLISH}
+  #   volumes:
+  #     - dbdatapublish:/var/lib/mysql
+  #   networks:
+  #     - app-networks
+
+  mongodb-catalog:
+    container_name: mongodb-catalog
+    image: mongo
+    cap_add:
+      - SYS_NICE
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_DATABASE=${CATALOGDB_NAME}
+      - MONGO_INITDB_SCRIPTS=/docker-entrypoint-initdb.d/mongo-init.js
+    volumes:
+      - datacatalog:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+    networks:
+      - app-networks
+
+  mongodb-publish:
+    container_name: mongodb-publish
+    image: mongo
+    cap_add:
+      - SYS_NICE
+    restart: always
+    ports:
+      - 27018:27017
+    environment:
+      - MONGO_INITDB_DATABASE=${PUBLISHDB_NAME}
+      - MONGO_INITDB_SCRIPTS=/docker-entrypoint-initdb.d/mongo-init.js
+    volumes:
+      - datapublish:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+    networks:
+      - app-networks
+
+  user_service:
+    container_name: library-user
+    build:
+      context: ./UserService
+      dockerfile: Dockerfile
+    image: richardoj/library-user:latest
+    volumes:
+      - ./config/firebase-config.json:/app/config/firebase-config.json
+    restart: always
+    depends_on:
+      - rabbitmq
+      - mysqldb-user
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - CONNECTION_STRING=${CONNECTIONSTRING_USER}
+      - RABBITMQHOST=${RABBITMQHOST}
+      - RABBITMQPORT=${RABBITMQPORT}
+      - FIREBASE_CONFIG=${FIREBASE_CONFIG}
+    networks:
+      - app-networks
+  
+  catalog_service:
+    build:
+      context: ./CatalogNoSQL
+      dockerfile: Dockerfile
+    image: richardoj/library-catalog-nosql:latest
+    restart: always
+    depends_on:
+      - rabbitmq
+      - mongodb-catalog
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - CATALOGCONN_STRING=${CATALOGCONN_STRING}
+      - CATALOGDB_NAME=${CATALOGDB_NAME}
+      - CATALOGCOLL_NAME=${CATALOGCOLL_NAME}
+      - RABBITMQHOST=${RABBITMQHOST}
+      - RABBITMQPORT=${RABBITMQPORT}
+      - BLOB_CONNECTION_STRING=${BLOB_CONNECTION_STRING}
+    networks:
+      - app-networks
+  
+  publish_service:
+    build:
+      context: ./PublishNoSQL
+      dockerfile: Dockerfile
+    image: richardoj/library-publish-nosql:latest
+    restart: always
+    depends_on:
+      - rabbitmq
+      - mongodb-publish
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - PUBLISHCONN_STRING=${PUBLISHCONN_STRING}
+      - PUBLISHDB_NAME=${PUBLISHDB_NAME}
+      - PUBLISHCOLL_NAME=${PUBLISHCOLL_NAME}
+      - RABBITMQHOST=${RABBITMQHOST}
+      - RABBITMQPORT=${RABBITMQPORT}
+      - BLOB_CONNECTION_STRING=${BLOB_CONNECTION_STRING}
+    networks:
+      - app-networks
+  
+  # catalog_service:
+  #   build:
+  #     context: ./CatalogService
+  #     dockerfile: Dockerfile
+  #   image: richardoj/library-catalog:latest
+  #   restart: always
+  #   depends_on:
+  #     - rabbitmq
+  #     - mysqldb-catalog
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - CONNECTION_STRING=${CONNECTIONSTRING_CATALOG}
+  #     - RABBITMQHOST=${RABBITMQHOST}
+  #     - RABBITMQPORT=${RABBITMQPORT}
+  #     - BLOB_CONNECTION_STRING=${BLOB_CONNECTION_STRING}
+  #   networks:
+  #     - app-networks
+  
+  # publish_service:
+  #   build:
+  #     context: ./PublishService
+  #     dockerfile: Dockerfile
+  #   image: richardoj/library-publish:latest
+  #   restart: always
+  #   depends_on:
+  #     - rabbitmq
+  #     - mysqldb-publish
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - CONNECTION_STRING=${CONNECTIONSTRING_PUBLISH}
+  #     - RABBITMQHOST=${RABBITMQHOST}
+  #     - RABBITMQPORT=${RABBITMQPORT}
+  #     - BLOB_CONNECTION_STRING=${BLOB_CONNECTION_STRING}
+  #   networks:
+  #     - app-networks
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+    ports:
+      - '8010:3000'
+    networks:
+      - app-networks
+
+  # ocelotapigw:
+  #   container_name: ocelotapigw
+  #   image: richardoj/ocelotapigw:latest
+  #   build:
+  #     context: ./APIGateway
+  #     dockerfile: Dockerfile
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #   depends_on:
+  #     - user_service
+  #     - catalog_service
+  #     - publish_service
+  #   networks:
+  #     - app-networks
+  #   ports:
+  #     - "8010:80"
+
+volumes:
+  dbdatauser:
+  dbdatacatalog:
+  dbdatapublish:
+  datacatalog:
+  datapublish:
+
+networks:
+  app-networks:
+
