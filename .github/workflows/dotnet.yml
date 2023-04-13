@@ -91,7 +91,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"RichardoJ_Semester6-Library" /o:"richardoj" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"RichardoJ_Semester6-Backend" /o:"richardoj" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
           dotnet build UserService/UserService.csproj
           dotnet build CatalogService/CatalogService.csproj
           dotnet build PublishService/PublishService.csproj
