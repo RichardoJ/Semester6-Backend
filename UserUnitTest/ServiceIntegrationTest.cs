@@ -68,7 +68,7 @@ namespace UserUnitTest
         {
             // Arrange
             var userIdToRemove = 1;
-            var userToRemove = new User { Id = userIdToRemove, Name = "John", Email = "richardo.jason@gmail.com", Password ="lalal", Role = "READER", University = "Petra" };
+            var userToRemove = new User { Id = userIdToRemove, Name = "John", Email = "richardo.jason@gmail.com", Role = "READER", University = "Petra" };
             _dbContext.Users.Add(userToRemove);
             _dbContext.SaveChanges();
             //userRepo.AddUser(userToRemove);
@@ -88,7 +88,7 @@ namespace UserUnitTest
         public void AddUser_Should_Add_User_To_Database()
         {
             // Arrange
-            var userToAdd = new User { Id = 1, Name = "John", Email = "richardo.jason@gmail.com", Password = "lalal", Role = "READER", University = "Petra" };
+            var userToAdd = new User { Id = 1, Name = "John", Email = "richardo.jason@gmail.com", Role = "READER", University = "Petra" };
 
             // Act
             userRepo.AddUser(userToAdd);
