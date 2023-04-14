@@ -9058,11 +9058,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\richa\\Desktop\\Semester6\\PublishTesting\\PublishTesting.csproj",
+      "projectUniqueName": "C:\\Users\\richa\\Desktop\\Semester6-Backend\\PublishTesting\\PublishTesting.csproj",
       "projectName": "PublishTesting",
-      "projectPath": "C:\\Users\\richa\\Desktop\\Semester6\\PublishTesting\\PublishTesting.csproj",
+      "projectPath": "C:\\Users\\richa\\Desktop\\Semester6-Backend\\PublishTesting\\PublishTesting.csproj",
       "packagesPath": "C:\\Users\\richa\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\richa\\Desktop\\Semester6\\PublishTesting\\obj\\",
+      "outputPath": "C:\\Users\\richa\\Desktop\\Semester6-Backend\\PublishTesting\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\richa\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -9079,8 +9079,8 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "C:\\Users\\richa\\Desktop\\Semester6\\PublishNoSQL\\PublishNoSQL.csproj": {
-              "projectPath": "C:\\Users\\richa\\Desktop\\Semester6\\PublishNoSQL\\PublishNoSQL.csproj"
+            "C:\\Users\\richa\\Desktop\\Semester6-Backend\\PublishNoSQL\\PublishNoSQL.csproj": {
+              "projectPath": "C:\\Users\\richa\\Desktop\\Semester6-Backend\\PublishNoSQL\\PublishNoSQL.csproj"
             }
           }
         }

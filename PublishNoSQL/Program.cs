@@ -58,6 +58,9 @@ builder.Services.AddSingleton<IMessageBusClient, MessageBusClient>();
 //Event Processor
 builder.Services.AddSingleton<IEventProcessor, EventProcessor>();
 
+//Add MessageSubscriber
+builder.Services.AddHostedService<MessageBusSubcriber>();
+
 //Add JWT Verification
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddScheme<AuthenticationSchemeOptions, FirebaseAuthenticationHandler>(JwtBearerDefaults.AuthenticationScheme, (o) => { });
 

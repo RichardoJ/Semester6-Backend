@@ -32,10 +32,6 @@ namespace UserService.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("longtext");

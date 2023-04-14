@@ -1,4 +1,5 @@
-﻿using UserService.Model;
+﻿using UserService.Dto;
+using UserService.Model;
 
 namespace UserService.Service
 {
@@ -6,6 +7,8 @@ namespace UserService.Service
     {
         public IEnumerable<User> getAllUser();
         public User getUserById(int id);
+
+        public UserLoginInfoDto getUserByEmail(string email);
 
         public void addUser(User user);
 

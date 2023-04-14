@@ -40,6 +40,11 @@ namespace UserService.Repository
             return _context.Users.FirstOrDefault(p => p.Id == id);
         }
 
+        public User GetByEmail(string email)
+        {
+            return _context.Users.FirstOrDefault(p => p.Email == email);
+        }
+
         public bool SaveChanges()
         {
             return (_context.SaveChanges() >= 0);

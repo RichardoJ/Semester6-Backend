@@ -78,6 +78,7 @@ namespace PublishNoSQL.Controllers
 
         [HttpPut]
         [Route("update")]
+        [Authorize(Policy = "Public")]
         public async Task<IActionResult> UpdatePaper(Paper paper)
         {
             Console.WriteLine("Updating Paper ...");
@@ -110,6 +111,7 @@ namespace PublishNoSQL.Controllers
         }
 
         [HttpDelete("delete/{id:length(24)}")]
+        [Authorize(Policy = "Public")]
         public async Task<IActionResult> RemovePaper(string id)
         {
             Console.WriteLine($"deleted {id}");
@@ -140,6 +142,7 @@ namespace PublishNoSQL.Controllers
 
         [HttpPost]
         [Route("pdf")]
+        [Authorize(Policy = "Public")]
         public async Task<ActionResult> addPaperWithPDF([FromForm] PaperWithFileDto paper)
         {
             Console.WriteLine("Adding Paper ... ");

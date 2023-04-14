@@ -9013,11 +9013,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\richa\\Desktop\\Semester6\\UserService\\UserService.csproj",
+      "projectUniqueName": "C:\\Users\\richa\\Desktop\\Semester6-Backend\\UserService\\UserService.csproj",
       "projectName": "UserService",
-      "projectPath": "C:\\Users\\richa\\Desktop\\Semester6\\UserService\\UserService.csproj",
+      "projectPath": "C:\\Users\\richa\\Desktop\\Semester6-Backend\\UserService\\UserService.csproj",
       "packagesPath": "C:\\Users\\richa\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\richa\\Desktop\\Semester6\\UserService\\obj\\",
+      "outputPath": "C:\\Users\\richa\\Desktop\\Semester6-Backend\\UserService\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\richa\\AppData\\Roaming\\NuGet\\NuGet.Config",

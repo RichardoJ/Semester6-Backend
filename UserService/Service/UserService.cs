@@ -1,4 +1,5 @@
-﻿using UserService.Model;
+﻿using UserService.Dto;
+using UserService.Model;
 using UserService.Repository;
 
 namespace UserService.Service
@@ -21,6 +22,23 @@ namespace UserService.Service
         {
             return _userRepo.GetById(id);
         }
+
+        public UserLoginInfoDto getUserByEmail(string email)
+        {
+            var userInfo = _userRepo.GetByEmail(email);
+            if (userInfo != null)
+            {
+                return new UserLoginInfoDto
+                {
+                    Id = userInfo.Id,
+                    Email = userInfo.Email,
+                };
+            }
+            else
+            {
+                return null;
+        }
+            }
 
         public void addUser(User user)
         {

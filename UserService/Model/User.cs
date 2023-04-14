@@ -15,9 +15,6 @@ namespace UserService.Model
         public string Email { get; set; }
 
         [Required]
-        public string Password { get; set; }
-
-        [Required]
         public string University { get; set; }
 
         [Required]

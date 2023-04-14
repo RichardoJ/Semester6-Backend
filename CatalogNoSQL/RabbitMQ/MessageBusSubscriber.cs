@@ -2,31 +2,30 @@
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client;
 using System.Text;
+using CatalogNoSQL.Model;
+using Microsoft.Extensions.Options;
 
 namespace CatalogNoSQL.RabbitMQ
 {
     public class MessageBusSubcriber : BackgroundService
     {
-        private readonly IConfiguration _configuration;
         private readonly IEventProcessor _eventProcessor;
         private IConnection _connection;
         private IModel _channel;
         private string _queueName;
 
-        public MessageBusSubcriber(IConfiguration configuration, IEventProcessor eventProcessor)
+        public MessageBusSubcriber(IOptions<RabbitMQSettings> rabbitMQSettings, IEventProcessor eventProcessor)
         {
-            _configuration = configuration;
             _eventProcessor = eventProcessor;
-
-            InitializeRabbitMQ();
+            InitializeRabbitMQ(rabbitMQSettings);
         }
 
-        private void InitializeRabbitMQ()
+        private void InitializeRabbitMQ(IOptions<RabbitMQSettings> rabbitMQSettings)
         {
             var factory = new ConnectionFactory()
             {
-                HostName = Environment.GetEnvironmentVariable("RABBITMQHOST"),
-                Port = int.Parse(Environment.GetEnvironmentVariable("RABBITMQPORT"))
+                HostName = rabbitMQSettings.Value.HostName,
+                Port = int.Parse(rabbitMQSettings.Value.Port),
             };
 
             _connection = factory.CreateConnection();

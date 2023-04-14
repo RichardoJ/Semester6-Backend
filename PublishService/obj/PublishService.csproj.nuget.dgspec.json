@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\richa\\Desktop\\Semester 6\\PublishService\\PublishService.csproj": {}
+    "C:\\Users\\richa\\Desktop\\Semester6-Backend\\PublishService\\PublishService.csproj": {}
   },
   "projects": {
-    "C:\\Users\\richa\\Desktop\\Semester 6\\PublishService\\PublishService.csproj": {
+    "C:\\Users\\richa\\Desktop\\Semester6-Backend\\PublishService\\PublishService.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\richa\\Desktop\\Semester 6\\PublishService\\PublishService.csproj",
+        "projectUniqueName": "C:\\Users\\richa\\Desktop\\Semester6-Backend\\PublishService\\PublishService.csproj",
         "projectName": "PublishService",
-        "projectPath": "C:\\Users\\richa\\Desktop\\Semester 6\\PublishService\\PublishService.csproj",
+        "projectPath": "C:\\Users\\richa\\Desktop\\Semester6-Backend\\PublishService\\PublishService.csproj",
         "packagesPath": "C:\\Users\\richa\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\richa\\Desktop\\Semester 6\\PublishService\\obj\\",
+        "outputPath": "C:\\Users\\richa\\Desktop\\Semester6-Backend\\PublishService\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\richa\\AppData\\Roaming\\NuGet\\NuGet.Config",

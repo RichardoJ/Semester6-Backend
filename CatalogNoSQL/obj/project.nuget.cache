@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "JsigFFaJnnHNi0AQ7rV82ED7Melkemh7Y2gn7GwuMIVPscPGsQM6hsSLEPRdnO7IPzjyx4wvlXq/x4WIeMD9Mw==",
+  "dgSpecHash": "HWO3v92buJhea7dLzSUoF+1H27TbsSMYR64zja0i7sSGPfqW1tv4NGQDlQGB8VTDrKPXe97klSWiyACXHlfnJg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\richa\\Desktop\\Semester6\\CatalogNoSQL\\CatalogNoSQL.csproj",
+  "projectFilePath": "C:\\Users\\richa\\Desktop\\Semester6-Backend\\CatalogNoSQL\\CatalogNoSQL.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\richa\\.nuget\\packages\\awssdk.core\\3.7.100.14\\awssdk.core.3.7.100.14.nupkg.sha512",
     "C:\\Users\\richa\\.nuget\\packages\\awssdk.securitytoken\\3.7.100.14\\awssdk.securitytoken.3.7.100.14.nupkg.sha512",

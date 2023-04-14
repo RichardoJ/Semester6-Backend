@@ -45,10 +45,12 @@ namespace CatalogNoSQL.Controllers
 
         [HttpGet]
         [Route("all")]
+        [Authorize(Policy = "Public")]
         public async Task<IEnumerable<Paper>> Get() =>
         await _paperService.GetAllPapersAsync();
 
         [HttpGet("{id:length(24)}")]
+        [Authorize(Policy = "Public")]
         public async Task<ActionResult<Paper>> Get(string id)
         {
             var paper = await _paperService.GetPaperByIdAsync(id);
@@ -62,6 +64,7 @@ namespace CatalogNoSQL.Controllers
         }
 
         [HttpGet("author/{id}")]
+        [Authorize(Policy = "Public")]
         public async Task<ActionResult<IEnumerable<Paper>>> GetByAuthor(int id)
         {
             var paper = await _paperService.GetAllPapersByAuthorAsync(id);

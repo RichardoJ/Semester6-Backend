@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "0moA4630QvwbmP1t5mMTmJqSrTaTS8EX6ehOv1Imnq9OzJ40gBTSq+OItbcvjj46Pmbea7DlBjP8W1bdZeOHyg==",
+  "dgSpecHash": "zGujoG9++asiozeWCMcHjNYUzEtPvpXMzpJ1NvxVT/U+Ti8PakXej+llIc+lc9GIRkSoK3kUtrwzRfXsw3mTCg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\richa\\Desktop\\Semester6\\PublishNoSQL\\PublishNoSQL.csproj",
+  "projectFilePath": "C:\\Users\\richa\\Desktop\\Semester6-Backend\\PublishNoSQL\\PublishNoSQL.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\richa\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\richa\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.0\\automapper.extensions.microsoft.dependencyinjection.12.0.0.nupkg.sha512",

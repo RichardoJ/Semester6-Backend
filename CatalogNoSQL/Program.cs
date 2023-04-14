@@ -27,6 +27,14 @@ var config = new ConfigurationBuilder()
 var connectionString = config.GetValue<string>("CATALOGCONN_STRING");
 var databaseName = config.GetValue<string>("CATALOGDB_NAME");
 var collectionName = config.GetValue<string>("CATALOGCOLL_NAME");
+var rabbitMQHost = config.GetValue<string>("RABBITMQHOST");
+var rabbitMQPort = config.GetValue<string>("RABBITMQPORT");
+
+builder.Services.Configure<RabbitMQSettings>(options =>
+{
+    options.HostName = rabbitMQHost;
+    options.Port = rabbitMQPort;
+});
 
 builder.Services.Configure<PaperStoreDatabaseSettings>(options =>
 {

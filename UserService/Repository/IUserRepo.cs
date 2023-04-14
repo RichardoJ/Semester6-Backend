@@ -12,6 +12,8 @@ namespace UserService.Repository
 
         User GetById(int id);
 
+        User GetByEmail(string email);
+
         void DeleteUserById(int id);
     }
 }

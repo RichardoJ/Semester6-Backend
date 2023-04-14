@@ -7387,11 +7387,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\richa\\Desktop\\Semester6\\PublishNoSQL\\PublishNoSQL.csproj",
+      "projectUniqueName": "C:\\Users\\richa\\Desktop\\Semester6-Backend\\PublishNoSQL\\PublishNoSQL.csproj",
       "projectName": "PublishNoSQL",
-      "projectPath": "C:\\Users\\richa\\Desktop\\Semester6\\PublishNoSQL\\PublishNoSQL.csproj",
+      "projectPath": "C:\\Users\\richa\\Desktop\\Semester6-Backend\\PublishNoSQL\\PublishNoSQL.csproj",
       "packagesPath": "C:\\Users\\richa\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\richa\\Desktop\\Semester6\\PublishNoSQL\\obj\\",
+      "outputPath": "C:\\Users\\richa\\Desktop\\Semester6-Backend\\PublishNoSQL\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\richa\\AppData\\Roaming\\NuGet\\NuGet.Config",

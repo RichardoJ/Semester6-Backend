@@ -54,29 +54,46 @@ namespace UserService.Controllers
         }
 
         [HttpPost]
-        public ActionResult createUser(UserDto user)
+        public ActionResult createUser(UserWriteDto user)
         {
             Console.WriteLine("Creating User....");
-            var saveUser = _mapper.Map<Model.User>(user);
+            var saveUser = new Model.User();
+            saveUser.Name = user.Name;
+            saveUser.Email = user.Email;
+            saveUser.University = user.University;
+            saveUser.Role = user.Role;
             _service.addUser(saveUser);
             return Ok(user);
         }
 
-        //[HttpPost]
-        //[Route("login")]
-        //public async Task<ActionResult> LoginUser(UserDto user)
-        //{
-        //    Console.WriteLine("Login User....");
-        //    var userCredentials = await firebaseClient.SignInWithEmailAndPasswordAsync(user.Email, user.Password);
-        //    return Ok(user);
-        //}
+        [HttpPost]
+        [Route("login")]
+        [Authorize(Policy = "Public")]
+        public async Task<ActionResult> LoginUser(UserLoginDto user)
+        {
+            Console.WriteLine("Login User....");
+            var userInfo = _service.getUserByEmail(user.Email);
+            if (userInfo == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(userInfo);
+            }
+            
+        }
 
         [HttpPost]
         [Route("signup")]
-        public async Task<ActionResult> signUpUserAsync(UserDto user)
+        public async Task<ActionResult> signUpUserAsync(UserWriteDto user)
         {
             Console.WriteLine("Sign Up User....");
-            var saveUser = _mapper.Map<Model.User>(user);
+            var saveUser = new Model.User();
+            saveUser.Name = user.Name;
+            saveUser.Email = user.Email;
+            saveUser.University = user.University;
+            saveUser.Role = user.Role;
             _service.addUser(saveUser);
             UserRecordArgs args = new UserRecordArgs()
             {
@@ -90,7 +107,11 @@ namespace UserService.Controllers
                 { "role", user.Role },
             };
             FirebaseAuth.DefaultInstance.SetCustomUserClaimsAsync(userRecord.Uid, claims);
-            return Ok(userRecord);
+
+            var userSignInfo = new UserSignInfoDto();
+            userSignInfo.Id = saveUser.Id;
+            userSignInfo.User = userRecord;
+            return Ok(userSignInfo);
         }
 
         [HttpDelete("{id}")]
@@ -111,23 +132,6 @@ namespace UserService.Controllers
                 Console.WriteLine($"Could not send message async: {ex.Message}");
             }
             return Ok("Success");
-            //if (_service.getUserById(id) == null)
-            //{
-            //    //Send Async Message
-            //    try
-            //    {
-            //        _messageBusClient.deleteAuthor(deletedUser);
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        Console.WriteLine($"Could not send message async: {ex.Message}");
-            //    }
-            //    return Ok("Success");
-            //}
-            //else
-            //{
-            //    return Ok(NotFound());
-            //}
         }
 
         [HttpGet]
