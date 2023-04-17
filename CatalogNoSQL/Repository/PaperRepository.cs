@@ -1,6 +1,7 @@
 ﻿using CatalogNoSQL.Model;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using System.Security.Authentication;
 
 namespace CatalogNoSQL.Repository
 {
@@ -10,7 +11,10 @@ namespace CatalogNoSQL.Repository
 
         public PaperRepository(IOptions<PaperStoreDatabaseSettings> settings)
         {
-            var mongoClient = new MongoClient(settings.Value.ConnectionString);
+            MongoClientSettings mongoSettings = MongoClientSettings.FromUrl(new MongoUrl(settings.Value.ConnectionString));
+            mongoSettings.SslSettings = new SslSettings() { EnabledSslProtocols = SslProtocols.Tls12 };
+            var mongoClient = new MongoClient(mongoSettings);
+            //var mongoClient = new MongoClient(settings.Value.ConnectionString);
 
             var mongoDatabase = mongoClient.GetDatabase(settings.Value.DatabaseName);
 

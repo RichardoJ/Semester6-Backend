@@ -61,39 +61,39 @@ services:
   #   networks:
   #     - app-networks
 
-  mongodb-catalog:
-    container_name: mongodb-catalog
-    image: mongo
-    cap_add:
-      - SYS_NICE
-    restart: always
-    ports:
-      - 27017:27017
-    environment:
-      - MONGO_INITDB_DATABASE=${CATALOGDB_NAME}
-      - MONGO_INITDB_SCRIPTS=/docker-entrypoint-initdb.d/mongo-init.js
-    volumes:
-      - datacatalog:/data/db
-      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
-    networks:
-      - app-networks
+  # mongodb-catalog:
+  #   container_name: mongodb-catalog
+  #   image: mongo
+  #   cap_add:
+  #     - SYS_NICE
+  #   restart: always
+  #   ports:
+  #     - 27017:27017
+  #   environment:
+  #     - MONGO_INITDB_DATABASE=${CATALOGDB_NAME}
+  #     - MONGO_INITDB_SCRIPTS=/docker-entrypoint-initdb.d/mongo-init.js
+  #   volumes:
+  #     - datacatalog:/data/db
+  #     - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+  #   networks:
+  #     - app-networks
 
-  mongodb-publish:
-    container_name: mongodb-publish
-    image: mongo
-    cap_add:
-      - SYS_NICE
-    restart: always
-    ports:
-      - 27018:27017
-    environment:
-      - MONGO_INITDB_DATABASE=${PUBLISHDB_NAME}
-      - MONGO_INITDB_SCRIPTS=/docker-entrypoint-initdb.d/mongo-init.js
-    volumes:
-      - datapublish:/data/db
-      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
-    networks:
-      - app-networks
+  # mongodb-publish:
+  #   container_name: mongodb-publish
+  #   image: mongo
+  #   cap_add:
+  #     - SYS_NICE
+  #   restart: always
+  #   ports:
+  #     - 27018:27017
+  #   environment:
+  #     - MONGO_INITDB_DATABASE=${PUBLISHDB_NAME}
+  #     - MONGO_INITDB_SCRIPTS=/docker-entrypoint-initdb.d/mongo-init.js
+  #   volumes:
+  #     - datapublish:/data/db
+  #     - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+  #   networks:
+  #     - app-networks
 
   user_service:
     container_name: library-user
@@ -124,7 +124,8 @@ services:
     restart: always
     depends_on:
       - rabbitmq
-      - mongodb-catalog
+    ports:
+      - '5076:80'
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - CATALOGCONN_STRING=${CATALOGCONN_STRING}
@@ -144,7 +145,8 @@ services:
     restart: always
     depends_on:
       - rabbitmq
-      - mongodb-publish
+    ports:
+      - '5201:80'
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - PUBLISHCONN_STRING=${PUBLISHCONN_STRING}
