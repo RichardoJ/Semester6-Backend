@@ -3,6 +3,7 @@ using CatalogNoSQL.EventProcessing;
 using CatalogNoSQL.Model;
 using CatalogNoSQL.RabbitMQ;
 using CatalogNoSQL.Repository;
+using Docker.DotNet;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
 using Microsoft.Extensions.Options;
@@ -24,11 +25,23 @@ namespace CatalogTesting
         private readonly IContainer rabbitMqContainer;
         private readonly IOptions<RabbitMQSettings> rabbitMqSettings;
         private readonly IEventProcessor eventProcessor;
+        private readonly DockerClient _dockerClient;
 
         public MessageBusClientIntegrationTest()
         {
+            // Initialize DockerClient
+            try
+            {
+                _dockerClient = new DockerClientConfiguration(new Uri("unix:/var/run/docker.sock")).CreateClient();
+            }
+            catch (DockerApiException ex)
+            {
+                throw new Exception("Failed to create Docker client. Make sure Docker is installed and running on your machine.", ex);
+            }
+
             // Create a RabbitMQ container
             rabbitMqContainer = new TestcontainersBuilder<TestcontainersContainer>()
+               .WithDockerEndpoint(new Uri("unix:/var/run/docker.sock"))
                .WithImage("rabbitmq:3-management")
                .WithPortBinding(5672, 5672)
                .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5672))

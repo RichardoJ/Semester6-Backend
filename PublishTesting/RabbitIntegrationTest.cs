@@ -8,6 +8,7 @@ using DotNet.Testcontainers.Containers;
 using DotNet.Testcontainers.Builders;
 using RabbitMQ.Client.Events;
 using System.Text;
+using Docker.DotNet;
 
 namespace PublishTesting
 {
@@ -15,11 +16,23 @@ namespace PublishTesting
     {
         private readonly IContainer rabbitMqContainer;
         private readonly IOptions<RabbitMQSettings> rabbitMqSettings;
+        private readonly DockerClient _dockerClient;
 
         public MessageBusClientIntegrationTest()
         {
+            // Initialize DockerClient
+            try
+            {
+                _dockerClient = new DockerClientConfiguration(new Uri("unix:/var/run/docker.sock")).CreateClient();
+            }
+            catch (DockerApiException ex)
+            {
+                throw new Exception("Failed to create Docker client. Make sure Docker is installed and running on your machine.", ex);
+            }
+
             // Create a RabbitMQ container
             rabbitMqContainer = new TestcontainersBuilder<TestcontainersContainer>()
+               .WithDockerEndpoint(new Uri("unix:/var/run/docker.sock"))
                .WithImage("rabbitmq:3-management")
                .WithPortBinding(5672, 5672)
                .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5672))
