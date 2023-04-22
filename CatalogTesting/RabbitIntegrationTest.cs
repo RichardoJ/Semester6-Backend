@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace CatalogTesting
 {
-    public class MessageBusClientIntegrationTest : IAsyncLifetime
+    public class MessageBusClientIntegrationTest : IDisposable
     {
         private readonly IContainer rabbitMqContainer;
         private readonly IOptions<RabbitMQSettings> rabbitMqSettings;
@@ -42,18 +42,6 @@ namespace CatalogTesting
                 HostName = rabbitMqContainer.Hostname,
                 Port = 5672.ToString(),
             });
-        }
-
-        public async Task InitializeAsync()
-        {
-            // Start the RabbitMQ container
-            await rabbitMqContainer.StartAsync();
-        }
-
-        public async Task DisposeAsync()
-        {
-            // Stop the RabbitMQ container
-            await rabbitMqContainer.StopAsync();
         }
 
         [Fact]
@@ -123,6 +111,12 @@ namespace CatalogTesting
                 Port = int.Parse(rabbitMqSettings.Value.Port),
             };
             return factory.CreateConnection();
+        }
+
+        public void Dispose()
+        {
+            rabbitMqContainer.StopAsync().GetAwaiter().GetResult();
+            rabbitMqContainer.DisposeAsync().GetAwaiter().GetResult();
         }
     }
 }
