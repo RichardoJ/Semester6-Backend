@@ -53,6 +53,9 @@ jobs:
     - name: Run User Service Test
       working-directory: ./UserService
       run: dotnet test
+    # - name: Run Publish Service Test
+    #   working-directory: ./PublishNoSQL
+    #   run: dotnet test
     - name: Run Catalog Service Test
       working-directory: ./CatalogNoSQL
       run: dotnet test
