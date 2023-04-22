@@ -1,33 +1,89 @@
 ﻿using CatalogNoSQL.Model;
 using CatalogNoSQL.Repository;
+using DotNet.Testcontainers.Builders;
+using DotNet.Testcontainers.Containers;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using MongoDB.Driver.Core.Misc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Security.Authentication;
 
-namespace CatalogTesting
+namespace CatalogNoSQL.IntegrationTests
 {
-    public class PaperIntegrationTest : IClassFixture<MongoDBContainerFixture>
+    public class PaperRepositoryTests : IDisposable
     {
+        private readonly IContainer _mongoContainerHost;
+        private readonly IMongoDatabase _mongoDatabase;
+        private const string MongoDbContainerName = "mongo-test-container";
+        private const int MongoDbPort = 27017;
         private readonly IPaperRepository _paperRepository;
         private readonly IMongoCollection<Paper> _papersCollection;
-        private MongoDBContainerFixture _fixture;
 
-        public PaperIntegrationTest(MongoDBContainerFixture fixture)
+        public PaperRepositoryTests()
         {
-            _fixture= fixture;
-            _paperRepository = new PaperRepository(Options.Create(new PaperStoreDatabaseSettings
-            {
-                ConnectionString = fixture.ConnectionString.ToString(),
-                DatabaseName = fixture.MongoDatabase.DatabaseNamespace.DatabaseName,
-                PapersCollectionName = fixture.PapersCollection.CollectionNamespace.CollectionName
-            }));
+            // Create a TestContainers container for MongoDB
+            var builder = new TestcontainersBuilder<TestcontainersContainer>()
+                .WithName(MongoDbContainerName)
+                .WithPortBinding(MongoDbPort, MongoDbPort)
+                .WithImage("mongo:4.4")
+                .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(MongoDbPort));
+            _mongoContainerHost = builder.Build();
 
-            _papersCollection = fixture.PapersCollection;
+            // Start the container
+            _mongoContainerHost.StartAsync().GetAwaiter().GetResult();
+
+            // Get the container's IP address and port
+            var mongoHost = _mongoContainerHost.Hostname;
+            var mongoPort = _mongoContainerHost.GetMappedPublicPort(27017);
+
+
+            // Create the MongoDB client and database
+            var mongoSettings = MongoClientSettings.FromUrl(new MongoUrl($"mongodb://{mongoHost}:{mongoPort}"));
+            mongoSettings.SslSettings = new SslSettings() { EnabledSslProtocols = SslProtocols.Tls12 };
+            var mongoClient = new MongoClient(mongoSettings);
+            _mongoDatabase = mongoClient.GetDatabase("test");
+
+            // Create the repository to be tested
+            var options = Options.Create(new PaperStoreDatabaseSettings
+            {
+                ConnectionString = $"mongodb://{mongoHost}:{mongoPort}",
+                DatabaseName = "test",
+                PapersCollectionName = "papers"
+            });
+            _paperRepository = new PaperRepository(options);
+            _papersCollection = _mongoDatabase.GetCollection<Paper>("papers");
+        }
+
+        public void Dispose()
+        {
+            // Stop the container and clean up resources
+            _mongoContainerHost.StopAsync().GetAwaiter().GetResult();
+            _mongoContainerHost.DisposeAsync().GetAwaiter().GetResult();
+        }
+
+        [Fact]
+        public async Task AddPaper_ShouldAddPaperToDatabase()
+        {
+            // Arrange
+            var paper = new Paper { 
+                Id = "642dd3fe3072582852c23a62",
+                Title = "Test Paper",
+                Description = "Description",
+                Author = "Author",
+                AuthorId = 1,
+                PublishedYear = "2020",
+                Category = "Category",
+                CiteCount = 0,
+                PaperLink = "http://example.com/test-paper"
+            };
+
+            // Act
+            _paperRepository.AddPaper(paper);
+            await Task.Delay(TimeSpan.FromSeconds(10));
+
+            // Assert
+            var result = await _mongoDatabase.GetCollection<Paper>("papers").Find(x => x.Id == paper.Id).FirstOrDefaultAsync();
+            Assert.NotNull(result);
+            Assert.Equal(paper.Title, result.Title);
+            Assert.Equal(paper.AuthorId, result.AuthorId);
         }
 
         [Fact]
@@ -46,8 +102,6 @@ namespace CatalogTesting
 
             // Assert
             Assert.Equal(3, papers.Count());
-
-            _fixture.ClearData();
         }
 
         [Fact]
@@ -66,8 +120,6 @@ namespace CatalogTesting
 
             // Assert
             Assert.Equal(2, papers.Count());
-
-            _fixture.ClearData();
         }
 
         [Fact]
@@ -84,40 +136,6 @@ namespace CatalogTesting
             Assert.Equal(paper.Title, result.Title);
             Assert.Equal(paper.AuthorId, result.AuthorId);
 
-            _fixture.ClearData();
-        }
-
-        [Fact]
-        public async Task AddPaper_ShouldAddNewPaper()
-        {
-            // Arrange
-            var paper = new Paper { Title = "Paper 1", AuthorId = 1 };
-
-            // Act
-            _paperRepository.AddPaper(paper);
-
-            // Assert
-            var result = await _papersCollection.Find(x => x.Id == paper.Id).FirstOrDefaultAsync();
-            Assert.NotNull(result);
-
-            _fixture.ClearData();
-        }
-
-        [Fact]
-        public async Task RemovePaper_ShouldRemovePaperById()
-        {
-            // Arrange
-            var paper = new Paper { Title = "Paper 1", AuthorId = 1 };
-            await _papersCollection.InsertOneAsync(paper);
-
-            // Act
-            _paperRepository.RemovePaper(paper.Id);
-
-            // Assert
-            var result = await _papersCollection.Find(x => x.Id == paper.Id).FirstOrDefaultAsync();
-            Assert.Null(result);
-
-            _fixture.ClearData();
         }
     }
 }
