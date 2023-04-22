@@ -9,6 +9,7 @@
       "PublishTesting/1.0.0": {
         "dependencies": {
           "Microsoft.NET.Test.Sdk": "17.3.2",
+          "MongoDB.Driver": "2.19.1",
           "Moq": "4.18.4",
           "PublishNoSQL": "1.0.0",
           "Testcontainers": "3.0.0",

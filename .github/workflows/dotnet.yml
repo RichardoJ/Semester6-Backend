@@ -50,12 +50,12 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.0.x
-    # - name: Run User Service Test
-    #   working-directory: ./UserService
-    #   run: dotnet test
-    # - name: Run Publish Service Test
-    #   working-directory: ./PublishNoSQL
-    #   run: dotnet test
+    - name: Run User Service Test
+      working-directory: ./UserService
+      run: dotnet test
+    - name: Run Publish Service Test
+      working-directory: ./PublishNoSQL
+      run: dotnet test
     - name: Run Catalog Service Test
       working-directory: ./CatalogNoSQL
       run: dotnet test
