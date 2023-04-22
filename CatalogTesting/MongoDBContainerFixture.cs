@@ -1,4 +1,5 @@
 ﻿using CatalogNoSQL.Model;
+using Docker.DotNet;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
 using MongoDB.Driver;
@@ -13,6 +14,7 @@ namespace CatalogTesting
         private const string MongoDbContainerName = "mongo-test-container";
         private const int MongoDbPort = 27017;
         private readonly IContainer _container;
+        private readonly DockerClient _dockerClient;
 
         public MongoClient MongoClient { get; }
         public IMongoDatabase MongoDatabase { get; }
@@ -22,8 +24,20 @@ namespace CatalogTesting
 
         public MongoDBContainerFixture()
         {
+
+            // Initialize DockerClient
+            try
+            {
+                _dockerClient = new DockerClientConfiguration(new Uri("unix:/var/run/docker.sock")).CreateClient();
+            }
+            catch (DockerApiException ex)
+            {
+                throw new Exception("Failed to create Docker client. Make sure Docker is installed and running on your machine.", ex);
+            }
+
             // Create container
             var builder = new TestcontainersBuilder<TestcontainersContainer>()
+                .WithDockerEndpoint(new Uri("unix:/var/run/docker.sock"))
                 .WithImage(MongoDbImage)
                 .WithName(MongoDbContainerName)
                 .WithPortBinding(MongoDbPort, MongoDbPort)
@@ -52,6 +66,7 @@ namespace CatalogTesting
         {
             ClearData();
             _container.StopAsync().GetAwaiter().GetResult();
+            _container.DisposeAsync();
         }
 
         public void ClearData()
