@@ -9,7 +9,7 @@ namespace PublishTesting
 {
     public class MongoDBContainerFixture : IDisposable
     {
-        private const string MongoDbImage = "mongo:latest";
+        private const string MongoDbImage = "mongo:5.0";
         private const string MongoDbContainerName = "mongo-test-container";
         private const int MongoDbPort = 27017;
         private readonly IContainer _container;
