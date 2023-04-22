@@ -13,7 +13,6 @@ namespace PublishTesting
         private const string MongoDbContainerName = "mongo-test-container";
         private const int MongoDbPort = 27017;
         private readonly IContainer _container;
-        private readonly DockerClient _dockerClient;
 
         public MongoClient MongoClient { get; }
         public IMongoDatabase MongoDatabase { get; }
@@ -23,19 +22,8 @@ namespace PublishTesting
 
         public MongoDBContainerFixture()
         {
-            // Initialize DockerClient
-            try
-            {
-                _dockerClient = new DockerClientConfiguration(new Uri("unix:/var/run/docker.sock")).CreateClient();
-            }
-            catch (DockerApiException ex)
-            {
-                throw new Exception("Failed to create Docker client. Make sure Docker is installed and running on your machine.", ex);
-            }
-
             // Create container
             var builder = new TestcontainersBuilder<TestcontainersContainer>()
-                .WithDockerEndpoint(new Uri("unix:/var/run/docker.sock"))
                 .WithImage(MongoDbImage)
                 .WithName(MongoDbContainerName)
                 .WithPortBinding(MongoDbPort, MongoDbPort)
@@ -63,7 +51,6 @@ namespace PublishTesting
         public void Dispose()
         {
             _container.StopAsync().GetAwaiter().GetResult();
-            _container.DisposeAsync();
         }
     }
 }

@@ -40,8 +40,8 @@ jobs:
     - name: Push Docker Image
       run: docker compose push
   
-  Test:
-    name: Test
+  UserTest:
+    name: UserTest
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -53,9 +53,31 @@ jobs:
     - name: Run User Service Test
       working-directory: ./UserService
       run: dotnet test
+  
+  PublishTest:
+    name: PublishTest
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
     - name: Run Publish Service Test
       working-directory: ./PublishNoSQL
       run: dotnet test
+  
+  CatalogTest:
+    name: CatalogTest
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
     - name: Run Catalog Service Test
       working-directory: ./CatalogNoSQL
       run: dotnet test

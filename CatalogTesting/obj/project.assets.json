@@ -9046,7 +9046,6 @@
     "net6.0": [
       "CatalogNoSQL >= 1.0.0",
       "Microsoft.NET.Test.Sdk >= 17.3.2",
-      "MongoDB.Driver >= 2.19.1",
       "Moq >= 4.18.4",
       "RabbitMQ.Client >= 6.5.0",
       "Testcontainers >= 3.0.0",
@@ -9101,10 +9100,6 @@
           "Microsoft.NET.Test.Sdk": {
             "target": "Package",
             "version": "[17.3.2, )"
-          },
-          "MongoDB.Driver": {
-            "target": "Package",
-            "version": "[2.19.1, )"
           },
           "Moq": {
             "target": "Package",
