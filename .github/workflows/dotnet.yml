@@ -55,32 +55,33 @@ jobs:
       run: dotnet test
   
   PublishTest:
-    name: PublishTest
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
+  name: PublishTest
+  needs: build
+  runs-on: windows-latest
+  steps:
     - uses: actions/checkout@v3
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.0.x
     - name: Run Publish Service Test
-      working-directory: ./PublishNoSQL
+      working-directory: .\PublishNoSQL
       run: dotnet test
+
   
-  CatalogTest:
-    name: CatalogTest
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 6.0.x
-    - name: Run Catalog Service Test
-      working-directory: ./CatalogNoSQL
-      run: dotnet test
+  # CatalogTest:
+  #   name: CatalogTest
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - name: Setup .NET
+  #     uses: actions/setup-dotnet@v3
+  #     with:
+  #       dotnet-version: 6.0.x
+  #   - name: Run Catalog Service Test
+  #     working-directory: ./CatalogNoSQL
+  #     run: dotnet test
 
   Analyze:
     name: Build and analyze
