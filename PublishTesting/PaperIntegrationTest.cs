@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Options;
+﻿using DotNet.Testcontainers.Builders;
+using DotNet.Testcontainers.Containers;
+using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using PublishNoSQL.Model;
@@ -7,26 +9,60 @@ using PublishNoSQL.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Authentication;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace PublishTesting
 {
-    public class PaperServiceIntegrationTests : IClassFixture<MongoDBContainerFixture>
+    public class PaperServiceIntegrationTests : IDisposable
     {
         private readonly IPaperService _paperService;
         private readonly IMongoCollection<Paper> _papersCollection;
+        private readonly IContainer _mongoContainerHost;
+        private readonly IMongoDatabase _mongoDatabase;
+        private const string MongoDbContainerName = "mongo-test-container";
+        private const int MongoDbPort = 27017;
+        private readonly IPaperRepository _paperRepository;
 
-        public PaperServiceIntegrationTests(MongoDBContainerFixture fixture)
+        public PaperServiceIntegrationTests()
         {
-            _papersCollection = fixture.PapersCollection;
+            // Create a TestContainers container for MongoDB
+            var builder = new TestcontainersBuilder<TestcontainersContainer>()
+                .WithName(MongoDbContainerName)
+                .WithPortBinding(MongoDbPort, MongoDbPort)
+                .WithImage("mongo:4.4")
+                .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(MongoDbPort));
+            _mongoContainerHost = builder.Build();
+
+            // Start the container
+            _mongoContainerHost.StartAsync().GetAwaiter().GetResult();
+
+            // Get the container's IP address and port
+            var mongoHost = _mongoContainerHost.Hostname;
+            var mongoPort = _mongoContainerHost.GetMappedPublicPort(27017);
+
+
+            // Create the MongoDB client and database
+            var mongoSettings = MongoClientSettings.FromUrl(new MongoUrl($"mongodb://{mongoHost}:{mongoPort}"));
+            mongoSettings.SslSettings = new SslSettings() { EnabledSslProtocols = SslProtocols.Tls12 };
+            var mongoClient = new MongoClient(mongoSettings);
+            _mongoDatabase = mongoClient.GetDatabase("test");
             _paperService = new PaperService(new PaperRepository(new OptionsWrapper<PaperStoreDatabaseSettings>(
                 new PaperStoreDatabaseSettings
                 {
-                    ConnectionString = fixture.ConnectionString.ToString(),
-                    DatabaseName = fixture.MongoDatabase.DatabaseNamespace.DatabaseName,
-                    PapersCollectionName = fixture.PapersCollection.CollectionNamespace.CollectionName
+                    ConnectionString = $"mongodb://{mongoHost}:{mongoPort}",
+                    DatabaseName = "test",
+                    PapersCollectionName = "papers"
                 })));
+            _papersCollection = _mongoDatabase.GetCollection<Paper>("papers");
+        }
+
+        public void Dispose()
+        {
+            // Stop the container and clean up resources
+            _mongoContainerHost.StopAsync().GetAwaiter().GetResult();
+            _mongoContainerHost.DisposeAsync().GetAwaiter().GetResult();
         }
 
 
@@ -153,5 +189,7 @@ namespace PublishTesting
             Assert.Null(dbPaper);
 
         }
+
+
     }
 }
