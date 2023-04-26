@@ -8,6 +8,7 @@ using CatalogNoSQL.EventProcessing;
 using CatalogNoSQL.RabbitMQ;
 using DotNetEnv.Configuration;
 using Microsoft.Extensions.Configuration;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,6 +47,13 @@ builder.Services.Configure<PaperStoreDatabaseSettings>(options =>
 //Add Service
 builder.Services.AddSingleton<IPaperService, PaperService>();
 builder.Services.AddSingleton<IPaperRepository, PaperRepository>();
+
+// Add Redis caching
+var redisCon = Environment.GetEnvironmentVariable("REDIS_CON");
+var redisConfiguration = ConfigurationOptions.Parse(redisCon);
+builder.Services.AddStackExchangeRedisCache(options => {
+    options.ConfigurationOptions = redisConfiguration;
+});
 
 //Add Azure Blob Storage
 builder.Services.AddTransient<IAzureStorage, AzureStorage>();

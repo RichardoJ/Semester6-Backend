@@ -2,8 +2,11 @@
 using CatalogNoSQL.Repository;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using Moq;
+using Newtonsoft.Json;
 using System.Security.Authentication;
 
 namespace CatalogNoSQL.IntegrationTests
@@ -16,6 +19,7 @@ namespace CatalogNoSQL.IntegrationTests
         private const int MongoDbPort = 27017;
         private readonly IPaperRepository _paperRepository;
         private readonly IMongoCollection<Paper> _papersCollection;
+        private readonly Mock<IDistributedCache> _cacheMock;
 
         public PaperRepositoryTests()
         {
@@ -48,8 +52,10 @@ namespace CatalogNoSQL.IntegrationTests
                 DatabaseName = "test",
                 PapersCollectionName = "papers"
             });
-            _paperRepository = new PaperRepository(options);
+            _cacheMock = new Mock<IDistributedCache>();
+            _paperRepository = new PaperRepository(options, _cacheMock.Object);
             _papersCollection = _mongoDatabase.GetCollection<Paper>("papers");
+            
         }
 
         public void Dispose()
@@ -63,7 +69,8 @@ namespace CatalogNoSQL.IntegrationTests
         public async Task AddPaper_ShouldAddPaperToDatabase()
         {
             // Arrange
-            var paper = new Paper { 
+            var paper = new Paper
+            {
                 Id = "642dd3fe3072582852c23a62",
                 Title = "Test Paper",
                 Description = "Description",

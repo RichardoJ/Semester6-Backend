@@ -19,7 +19,7 @@
 
 //namespace CatalogTesting
 //{
-//    public class MessageBusClientIntegrationTest : IDisposable
+//    public class MessageBusClientIntegrationTest : IAsyncLifetime
 //    {
 //        private readonly IContainer rabbitMqContainer;
 //        private readonly IOptions<RabbitMQSettings> rabbitMqSettings;
@@ -28,7 +28,7 @@
 //        public MessageBusClientIntegrationTest()
 //        {
 
-//            // Create a RabbitMQ container
+//             Create a RabbitMQ container
 //            rabbitMqContainer = new TestcontainersBuilder<TestcontainersContainer>()
 //               .WithImage("rabbitmq:3-management")
 //               .WithPortBinding(5672, 5672)
@@ -36,7 +36,7 @@
 //               .Build();
 //            rabbitMqContainer.StartAsync().GetAwaiter().GetResult();
 
-//            // Set up the RabbitMQ settings
+//             Set up the RabbitMQ settings
 //            rabbitMqSettings = Options.Create(new RabbitMQSettings
 //            {
 //                HostName = rabbitMqContainer.Hostname,
@@ -44,10 +44,22 @@
 //            });
 //        }
 
+//        public async Task InitializeAsync()
+//        {
+//             Start the RabbitMQ container
+//            await rabbitMqContainer.StartAsync();
+//        }
+
+//        public async Task DisposeAsync()
+//        {
+//             Stop the RabbitMQ container
+//            await rabbitMqContainer.StopAsync();
+//        }
+
 //        [Fact]
 //        public async Task ReadMessageFromQueue_ProcessNewPaper()
 //        {
-//            //Arrange
+//            Arrange
 //            var mockEventProcessor = new Mock<IEventProcessor>();
 //            var mockPaperRepository = new Mock<IPaperRepository>();
 //            var serviceProvider = new Mock<IServiceProvider>();
@@ -65,7 +77,7 @@
 //            var body = Encoding.UTF8.GetBytes(message);
 //            channel.BasicPublish("trigger", "CatalogService", null, body);
 
-//            // Act
+//             Act
 //            var countdownEvent = new CountdownEvent(1);
 //            consumer.Received += (ModuleHandle, ea) =>
 //            {
@@ -74,7 +86,7 @@
 //                Assert.NotNull(notificationMessage);
 //                value = notificationMessage;
 
-//                // Pass the notificationMessage to the ProcessEvent method
+//                 Pass the notificationMessage to the ProcessEvent method
 //                mockEventProcessor.Object.ProcessEvent(notificationMessage);
 
 //                countdownEvent.Signal();
@@ -82,12 +94,12 @@
 
 //            channel.BasicConsume(queueName, true, consumer);
 
-//            // Wait for the countdown event to be signaled or timeout after 10 seconds
+//             Wait for the countdown event to be signaled or timeout after 10 seconds
 //            var isSignaled = countdownEvent.Wait(TimeSpan.FromSeconds(10));
 //            Assert.True(isSignaled, "The message was not consumed within the timeout period.");
 
 
-//            // Assert
+//             Assert
 //            mockEventProcessor.Verify(x => x.ProcessEvent(It.IsAny<string>()), Times.Once); // Verify that ProcessEvent was called at least once
 //            var messageDeserialize = JsonSerializer.Deserialize<PaperPublishedDto>(value);
 //            Assert.Equal(paperPublished.Id, messageDeserialize.Id);
@@ -111,12 +123,6 @@
 //                Port = int.Parse(rabbitMqSettings.Value.Port),
 //            };
 //            return factory.CreateConnection();
-//        }
-
-//        public void Dispose()
-//        {
-//            rabbitMqContainer.StopAsync().GetAwaiter().GetResult();
-//            rabbitMqContainer.DisposeAsync().GetAwaiter().GetResult();
 //        }
 //    }
 //}

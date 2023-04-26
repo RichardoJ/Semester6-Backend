@@ -28,6 +28,14 @@ services:
       - dbdatauser:/var/lib/mysql
     networks:
       - app-networks
+  
+  redis:
+    container_name: redis
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    networks:
+      - app-networks
 
   # mysqldb-catalog:
   #   container_name: mysqldb-catalog
@@ -124,6 +132,7 @@ services:
     restart: always
     depends_on:
       - rabbitmq
+      - redis
     ports:
       - '5076:80'
     environment:
@@ -134,6 +143,7 @@ services:
       - RABBITMQHOST=${RABBITMQHOST}
       - RABBITMQPORT=${RABBITMQPORT}
       - BLOB_CONNECTION_STRING=${BLOB_CONNECTION_STRING}
+      - REDIS_CON=${REDIS_CON}
     networks:
       - app-networks
   
