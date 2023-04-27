@@ -13,9 +13,10 @@ namespace PublishNoSQL.Service
             _paperRepository = paperRepository;
         }
 
-        public async Task AddPaperAsync(Paper paper)
+        public Task AddPaperAsync(Paper paper)
         {
             _paperRepository.AddPaper(paper);
+            return Task.CompletedTask;
         }
 
         public async Task<Boolean> UpdatePaperAsync(Paper paper)
@@ -50,9 +51,10 @@ namespace PublishNoSQL.Service
             
         }
 
-        public async Task RemovePapersByAuthorIdAsync(int authorId)
+        public Task RemovePapersByAuthorIdAsync(int authorId)
         {
             _paperRepository.RemovePaperByAuthorId(authorId);
+            return Task.CompletedTask;
         }
 
         public async Task<string> ReturnPaperLink(string id)

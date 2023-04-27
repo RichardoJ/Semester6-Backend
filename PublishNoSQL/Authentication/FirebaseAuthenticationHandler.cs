@@ -20,18 +20,18 @@ namespace PublishNoSQL.Authentication
         {
         }
 
-        protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
+        protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
             if (!Context.Request.Headers.ContainsKey("Authorization"))
             {
-                return AuthenticateResult.NoResult();
+                return Task.FromResult(AuthenticateResult.NoResult());
             }
 
             string bearerToken = Context.Request.Headers["Authorization"];
 
             if (bearerToken == null || !bearerToken.StartsWith(BEARER_PREFIX))
             {
-                return AuthenticateResult.Fail("Invalid scheme.");
+                return Task.FromResult(AuthenticateResult.Fail("Invalid scheme."));
             }
 
             string token = bearerToken.Substring(BEARER_PREFIX.Length);
@@ -41,11 +41,11 @@ namespace PublishNoSQL.Authentication
             try
             {
 
-                return AuthenticateResult.Success(CreateAuthenticationTicket(jwtToken));
+                return Task.FromResult(AuthenticateResult.Success(CreateAuthenticationTicket(jwtToken)));
             }
             catch (Exception ex)
             {
-                return AuthenticateResult.Fail(ex);
+                return Task.FromResult(AuthenticateResult.Fail(ex));
             }
         }
 

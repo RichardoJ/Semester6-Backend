@@ -178,7 +178,7 @@ namespace PublishNoSQL.Controllers
                 newPaper.PaperLink = response.Blob.Uri;
 
                 //Save to DB
-                _paperService.AddPaperAsync(newPaper);
+                await _paperService.AddPaperAsync(newPaper);
 
                 var publishPaper = _mapper.Map<PaperPublishedDto>(newPaper);
                 publishPaper.Event = "Publish";
