@@ -51,16 +51,16 @@ builder.Services.AddSingleton<IPaperRepository, PaperRepository>();
 // Add Redis caching
 var redisCon = Environment.GetEnvironmentVariable("REDIS_CON");
 var redisConfiguration = ConfigurationOptions.Parse(redisCon);
-redisConfiguration.AllowAdmin = true;
-redisConfiguration.AbortOnConnectFail = false;
+//redisConfiguration.AllowAdmin = true;
+//redisConfiguration.AbortOnConnectFail = false;
 
-// Modify the endpoint configuration to include all nodes in the cluster
-redisConfiguration.EndPoints.Add("redis-cluster-ip-0.redis-cluster.default.svc.cluster.local", 6379);
-redisConfiguration.EndPoints.Add("redis-cluster-ip-1.redis-cluster.default.svc.cluster.local", 6379);
-redisConfiguration.EndPoints.Add("redis-cluster-ip-2.redis-cluster.default.svc.cluster.local", 6379);
-redisConfiguration.EndPoints.Add("redis-cluster-ip-3.redis-cluster.default.svc.cluster.local", 6379);
-redisConfiguration.EndPoints.Add("redis-cluster-ip-4.redis-cluster.default.svc.cluster.local", 6379);
-redisConfiguration.EndPoints.Add("redis-cluster-ip-5.redis-cluster.default.svc.cluster.local", 6379);
+//// Modify the endpoint configuration to include all nodes in the cluster
+//redisConfiguration.EndPoints.Add("redis-cluster-ip-0.redis-cluster.default.svc.cluster.local", 6379);
+//redisConfiguration.EndPoints.Add("redis-cluster-ip-1.redis-cluster.default.svc.cluster.local", 6379);
+//redisConfiguration.EndPoints.Add("redis-cluster-ip-2.redis-cluster.default.svc.cluster.local", 6379);
+//redisConfiguration.EndPoints.Add("redis-cluster-ip-3.redis-cluster.default.svc.cluster.local", 6379);
+//redisConfiguration.EndPoints.Add("redis-cluster-ip-4.redis-cluster.default.svc.cluster.local", 6379);
+//redisConfiguration.EndPoints.Add("redis-cluster-ip-5.redis-cluster.default.svc.cluster.local", 6379);
 
 builder.Services.AddStackExchangeRedisCache(options => {
     options.ConfigurationOptions = redisConfiguration;

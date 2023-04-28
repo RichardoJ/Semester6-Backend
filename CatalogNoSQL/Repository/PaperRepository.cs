@@ -27,92 +27,200 @@ namespace CatalogNoSQL.Repository
             _cache = cache;
             _cacheOptions = new DistributedCacheEntryOptions
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(60) // Cache data for 60 seconds
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(120) // Cache data for 60 seconds
             };
         }
 
         public async void AddPaper(Paper paper)
         {
-            await _papersCollection.InsertOneAsync(paper);
-            // Invalidate the cache when a new paper is added
-            await _cache.RemoveAsync("all-papers");
+            try
+            {
+                await _papersCollection.InsertOneAsync(paper);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error adding paper to MongoDB: {ex.Message}");
+            }
+
+            try
+            {
+                // Invalidate the cache when a new paper is added
+                await _cache.RemoveAsync("all-papers");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error removing all-papers from cache: {ex.Message}");
+            }
         }
 
         public async Task<IEnumerable<Paper>> GetAllPapersAsync()
         {
-            var cachedPapers = await _cache.GetStringAsync("all-papers");
-            if (!string.IsNullOrEmpty(cachedPapers))
+            try
             {
-                // Return cached data
-                Console.WriteLine("From cache");
-                return JsonSerializer.Deserialize<IEnumerable<Paper>>(cachedPapers);
+                var cachedPapers = await _cache.GetStringAsync("all-papers");
+                if (!string.IsNullOrEmpty(cachedPapers))
+                {
+                    // Return cached data
+                    Console.WriteLine("From cache");
+                    return JsonSerializer.Deserialize<IEnumerable<Paper>>(cachedPapers);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                // Get data from the database
-                var papers = await _papersCollection.Find(_ => true).ToListAsync();
-                Console.WriteLine("From DB");
+                Console.WriteLine($"Error getting data from cache: {ex.Message}");
+            }
+
+            // Get data from the database
+            var papers = await _papersCollection.Find(_ => true).ToListAsync();
+            Console.WriteLine("From DB");
+
+            try
+            {
                 // Cache the data
                 await _cache.SetStringAsync("all-papers", JsonSerializer.Serialize(papers), _cacheOptions);
-                return papers;
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error caching data: {ex.Message}");
+            }
+
+            return papers;
         }
+
 
         public async Task<IEnumerable<Paper>> GetAllPapersByAuthor(int authorId)
         {
-            var cachedPapers = await _cache.GetStringAsync($"papers-by-author-{authorId}");
-            if (!string.IsNullOrEmpty(cachedPapers))
+            try
             {
-                // Return cached data
-                return JsonSerializer.Deserialize<IEnumerable<Paper>>(cachedPapers);
+                var cachedPapers = await _cache.GetStringAsync($"papers-by-author-{authorId}");
+                if (!string.IsNullOrEmpty(cachedPapers))
+                {
+                    // Return cached data
+                    Console.WriteLine("From cache");
+                    return JsonSerializer.Deserialize<IEnumerable<Paper>>(cachedPapers);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                // Get data from the database
-                var papers = await _papersCollection.Find(x => x.AuthorId == authorId).ToListAsync();
+                Console.WriteLine($"Error getting data from cache: {ex.Message}");
+            }
+
+            // Get data from the database
+            var papers = await _papersCollection.Find(x => x.AuthorId == authorId).ToListAsync();
+            Console.WriteLine("From DB");
+
+            try
+            {
                 // Cache the data
                 await _cache.SetStringAsync($"papers-by-author-{authorId}", JsonSerializer.Serialize(papers), _cacheOptions);
-                return papers;
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error caching data: {ex.Message}");
+            }
+
+            return papers;
         }
 
         public async Task<Paper> GetPaperAsync(string id)
         {
-            var cachedPaper = await _cache.GetStringAsync($"paper-{id}");
-            if (!string.IsNullOrEmpty(cachedPaper))
+            try
             {
-                // Return cached data
-                return JsonSerializer.Deserialize<Paper>(cachedPaper);
+                var cachedPaper = await _cache.GetStringAsync($"paper-{id}");
+                if (!string.IsNullOrEmpty(cachedPaper))
+                {
+                    // Return cached data
+                    Console.WriteLine("From cache");
+                    return JsonSerializer.Deserialize<Paper>(cachedPaper);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                // Get data from the database
-                var paper = await _papersCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
-                if (paper != null)
+                Console.WriteLine($"Error getting data from cache: {ex.Message}");
+            }
+
+            // Get data from the database
+            var paper = await _papersCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+            Console.WriteLine("From DB");
+
+            if (paper != null)
+            {
+                try
                 {
                     // Cache the data
                     await _cache.SetStringAsync($"paper-{id}", JsonSerializer.Serialize(paper), _cacheOptions);
                 }
-                return paper;
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error caching data: {ex.Message}");
+                }
             }
+
+            return paper;
         }
+
 
         public async void RemovePaper(string id)
         {
-            await _papersCollection.DeleteOneAsync(x => x.Id == id);
-            await _cache.RemoveAsync("all-papers");
+            try
+            {
+                await _papersCollection.DeleteOneAsync(x => x.Id == id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error adding paper to MongoDB: {ex.Message}");
+            }
+
+            try
+            {
+                await _cache.RemoveAsync("all-papers");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error removing all-papers from cache: {ex.Message}");
+            }
         }
 
         public async void RemovePaperByAuthorId(int id)
         {
-            await _papersCollection.DeleteManyAsync(x => x.AuthorId == id);
-            await _cache.RemoveAsync("all-papers");
+            try
+            {
+                await _papersCollection.DeleteManyAsync(x => x.AuthorId == id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error adding paper to MongoDB: {ex.Message}");
+            }
+
+            try
+            {
+                await _cache.RemoveAsync("all-papers");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error removing all-papers from cache: {ex.Message}");
+            }
         }
 
         public async void UpdatePaper(Paper paper)
         {
-            await _papersCollection.ReplaceOneAsync(x => x.Id == paper.Id, paper);
-            await _cache.RemoveAsync("all-papers");
+            try
+            {
+                await _papersCollection.ReplaceOneAsync(x => x.Id == paper.Id, paper);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error adding paper to MongoDB: {ex.Message}");
+            }
+
+            try
+            {
+                await _cache.RemoveAsync("all-papers");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error removing all-papers from cache: {ex.Message}");
+            }
         }
     }
 }
