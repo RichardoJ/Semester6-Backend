@@ -25,7 +25,7 @@ namespace UserUnitTest
 
         public UserRepoIntegrationTest()
         {
-            // Initialize DockerClient
+            //Initialize DockerClient
             try
             {
                 _dockerClient = new DockerClientConfiguration(new Uri("unix:/var/run/docker.sock")).CreateClient();

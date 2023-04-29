@@ -46,10 +46,20 @@ namespace UserService.Service
             _userRepo.SaveChanges();
         }
 
-        public void removeUser(int id)
+        public Boolean removeUser(int id)
         {
-            _userRepo.DeleteUserById(id);
-            _userRepo.SaveChanges();
+            var user = _userRepo.GetById(id);
+            if (user != null)
+            {
+                _userRepo.DeleteUserById(id);
+                _userRepo.SaveChanges();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+            
         }
     }
 }

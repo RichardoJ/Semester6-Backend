@@ -12,7 +12,7 @@ namespace UserService.Service
 
         public void addUser(User user);
 
-        public void removeUser(int id);
+        public Boolean removeUser(int id);
 
     }
 }

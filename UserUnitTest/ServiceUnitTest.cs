@@ -76,6 +76,8 @@ namespace UserUnitTest
         public void RemoveUser_ShouldCall_DeleteUserById_And_SaveChanges_Methods_On_UserRepo_With_Correct_Id()
         {
             // Arrange
+            var userToAdd = new User { Id = 1, Name = "John" };
+            _userRepoMock.Setup(x => x.GetById(userToAdd.Id)).Returns(userToAdd);
             var userIdToRemove = 1;
 
             // Act

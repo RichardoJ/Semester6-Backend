@@ -89,12 +89,7 @@ namespace UserService.Controllers
         public async Task<ActionResult> signUpUserAsync(UserWriteDto user)
         {
             Console.WriteLine("Sign Up User....");
-            var saveUser = new Model.User();
-            saveUser.Name = user.Name;
-            saveUser.Email = user.Email;
-            saveUser.University = user.University;
-            saveUser.Role = user.Role;
-            _service.addUser(saveUser);
+            
             UserRecordArgs args = new UserRecordArgs()
             {
                 Email = user.Email,
@@ -102,36 +97,60 @@ namespace UserService.Controllers
                 DisplayName = user.Name,
             };
             UserRecord userRecord = await FirebaseAuth.DefaultInstance.CreateUserAsync(args);
-            var claims = new Dictionary<string, object>()
+            if(userRecord != null)
             {
-                { "role", user.Role },
-            };
-            FirebaseAuth.DefaultInstance.SetCustomUserClaimsAsync(userRecord.Uid, claims);
+                var saveUser = new Model.User();
+                saveUser.Name = user.Name;
+                saveUser.Email = user.Email;
+                saveUser.University = user.University;
+                saveUser.Role = user.Role;
+                _service.addUser(saveUser);
+                var claims = new Dictionary<string, object>()
+                {
+                    { "role", user.Role },
+                };
+                FirebaseAuth.DefaultInstance.SetCustomUserClaimsAsync(userRecord.Uid, claims);
 
-            var userSignInfo = new UserSignInfoDto();
-            userSignInfo.Id = saveUser.Id;
-            userSignInfo.User = userRecord;
-            return Ok(userSignInfo);
+                var userSignInfo = new UserSignInfoDto();
+                userSignInfo.Id = saveUser.Id;
+                userSignInfo.User = userRecord;
+                return Ok(userSignInfo);
+            }
+            else
+            {
+                return BadRequest("Failed to sign up or email has already taken");
+            }
+
         }
 
         [HttpDelete("{id}")]
-        public ActionResult deleteUser(int id)
+        public async Task<ActionResult> deleteUserAsync(int id)
         {
             Console.WriteLine($"deleted {id}");
-            //_service.removeUser(id);
-            var deletedUser = new UserDeleteDto();
-            deletedUser.Id = id;
-            deletedUser.Event = "Delete_user";
-            //Send Async Message
-            try
+            var userInfo = _service.getUserById(id);
+            var status = _service.removeUser(id);
+            if(status == false)
             {
-                _messageBusClient.deleteAuthor(deletedUser);
+                return NotFound();
             }
-            catch (Exception ex)
+            else
             {
-                Console.WriteLine($"Could not send message async: {ex.Message}");
+                UserRecord userToDelete = await FirebaseAuth.DefaultInstance.GetUserByEmailAsync(userInfo.Email);
+                FirebaseAuth.DefaultInstance.DeleteUserAsync(userToDelete.Uid);
+                var deletedUser = new UserDeleteDto();
+                deletedUser.Id = id;
+                deletedUser.Event = "Delete_user";
+                //Send Async Message
+                try
+                {
+                    _messageBusClient.deleteAuthor(deletedUser);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Could not send message async: {ex.Message}");
+                }
+                return Ok("Success");
             }
-            return Ok("Success");
         }
 
         [HttpGet]
