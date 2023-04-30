@@ -193,3 +193,6 @@ C:\Users\richa\Desktop\Semester6-Backend\PublishNoSQL\obj\Debug\net6.0\refint\Pu
 C:\Users\richa\Desktop\Semester6-Backend\PublishNoSQL\obj\Debug\net6.0\PublishNoSQL.pdb
 C:\Users\richa\Desktop\Semester6-Backend\PublishNoSQL\obj\Debug\net6.0\PublishNoSQL.genruntimeconfig.cache
 C:\Users\richa\Desktop\Semester6-Backend\PublishNoSQL\obj\Debug\net6.0\ref\PublishNoSQL.dll
+C:\Users\richa\Desktop\Semester6-Backend\PublishNoSQL\bin\Debug\net6.0\Microsoft.Extensions.ObjectPool.dll
+C:\Users\richa\Desktop\Semester6-Backend\PublishNoSQL\bin\Debug\net6.0\Prometheus.NetStandard.dll
+C:\Users\richa\Desktop\Semester6-Backend\PublishNoSQL\bin\Debug\net6.0\Prometheus.AspNetCore.dll

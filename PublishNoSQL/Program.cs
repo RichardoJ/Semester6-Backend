@@ -7,6 +7,7 @@ using PublishNoSQL.Model;
 using PublishNoSQL.Repository;
 using PublishNoSQL.Service;
 using PublishNoSQL.RabbitMQ;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -90,10 +91,15 @@ app.UseCors(builder => builder
     .AllowAnyMethod()
     .AllowAnyHeader());
 
+//Prometheus
+app.UseHttpMetrics();
+
 app.UseAuthentication();
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapMetrics();
 
 app.Run();

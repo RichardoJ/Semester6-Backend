@@ -346,3 +346,6 @@ C:\Users\richa\Desktop\Semester6-Backend\UserService\obj\Debug\net6.0\refint\Use
 C:\Users\richa\Desktop\Semester6-Backend\UserService\obj\Debug\net6.0\UserService.pdb
 C:\Users\richa\Desktop\Semester6-Backend\UserService\obj\Debug\net6.0\UserService.genruntimeconfig.cache
 C:\Users\richa\Desktop\Semester6-Backend\UserService\obj\Debug\net6.0\ref\UserService.dll
+C:\Users\richa\Desktop\Semester6-Backend\UserService\bin\Debug\net6.0\Microsoft.Extensions.ObjectPool.dll
+C:\Users\richa\Desktop\Semester6-Backend\UserService\bin\Debug\net6.0\Prometheus.NetStandard.dll
+C:\Users\richa\Desktop\Semester6-Backend\UserService\bin\Debug\net6.0\Prometheus.AspNetCore.dll

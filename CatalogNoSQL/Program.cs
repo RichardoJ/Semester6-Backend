@@ -9,6 +9,7 @@ using CatalogNoSQL.RabbitMQ;
 using DotNetEnv.Configuration;
 using Microsoft.Extensions.Configuration;
 using StackExchange.Redis;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -105,10 +106,15 @@ app.UseCors(builder => builder
     .AllowAnyMethod()
     .AllowAnyHeader());
 
+app.UseHttpMetrics();
+
 app.UseAuthentication();
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+//Map Prometheus Metrics
+app.MapMetrics();
 
 app.Run();
