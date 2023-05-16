@@ -92,9 +92,10 @@ namespace PublishNoSQL.RabbitMQ
 
         private void SendMessage(string message)
         {
-            var body = Encoding.UTF8.GetBytes(message);
+            //var body = Encoding.UTF8.GetBytes(message);
+            var body2 = AesEncryption.Encrypt(message);
 
-            _channel.BasicPublish("trigger", "CatalogService", null, body);
+            _channel.BasicPublish("trigger", "CatalogService", null, body2);
 
             Console.WriteLine($"We have sent {message}");
         }

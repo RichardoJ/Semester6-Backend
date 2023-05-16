@@ -1594,6 +1594,19 @@
           }
         }
       },
+      "SampleEncryption-ex-1/1.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/EncryptionLibrary.dll": {
+            "related": ".runtimeconfig.json"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/EncryptionLibrary.dll": {
+            "related": ".runtimeconfig.json"
+          }
+        }
+      },
       "SharpCompress/0.30.1": {
         "type": "package",
         "compile": {
@@ -3142,6 +3155,7 @@
           "Microsoft.VisualStudio.Azure.Containers.Tools.Targets": "1.17.0",
           "MongoDB.Driver": "2.19.1",
           "RabbitMQ.Client": "6.5.0",
+          "SampleEncryption-ex-1": "1.0.1",
           "Swashbuckle.AspNetCore": "6.2.3",
           "prometheus-net.AspNetCore": "8.0.0"
         },
@@ -5363,6 +5377,19 @@
         "runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512",
         "runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl.nuspec",
         "runtimes/ubuntu.16.10-x64/native/System.Security.Cryptography.Native.OpenSsl.so"
+      ]
+    },
+    "SampleEncryption-ex-1/1.0.1": {
+      "sha512": "ufPg9TbuUeEaD7lpIDxWhwJNId2yE/Mcu8U4NuWWFuYF6H4caFsI+XNzeRwZgxG1WCPoHMeU2T7SRkhESyG0GA==",
+      "type": "package",
+      "path": "sampleencryption-ex-1/1.0.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net6.0/EncryptionLibrary.dll",
+        "lib/net6.0/EncryptionLibrary.runtimeconfig.json",
+        "sampleencryption-ex-1.1.0.1.nupkg.sha512",
+        "sampleencryption-ex-1.nuspec"
       ]
     },
     "SharpCompress/0.30.1": {
