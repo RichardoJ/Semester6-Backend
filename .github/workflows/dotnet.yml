@@ -31,18 +31,11 @@ jobs:
         echo "${{ secrets.ENV_SECRET }}" | base64 --decode > .env
     - name: Build
       run: docker compose build
-    -
-        name: Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-    - name: Push Docker Image
-      run: docker compose push
+
   
   UserTest:
     name: UserTest
-    needs: build
+    needs: Build
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -56,7 +49,7 @@ jobs:
   
   PublishTest:
     name: PublishTest
-    needs: build
+    needs: Build
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -71,7 +64,7 @@ jobs:
   
   CatalogTest:
     name: CatalogTest
-    needs: build
+    needs: Build
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -82,6 +75,19 @@ jobs:
     - name: Run Catalog Service Test
       working-directory: ./CatalogNoSQL
       run: dotnet test
+  
+  Push:
+   name: Pushing To Docker Hub
+   needs: [Build, UserTest, PublishTest, CatalogTest]
+   runs-on: ubuntu-latest
+   steps:
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+    - name: Push Docker Image
+      run: docker compose push
 
   Analyze:
     name: Build and analyze
