@@ -186,6 +186,7 @@ namespace CatalogNoSQL.Repository
             try
             {
                 await _papersCollection.DeleteManyAsync(x => x.AuthorId == id);
+
             }
             catch (Exception ex)
             {

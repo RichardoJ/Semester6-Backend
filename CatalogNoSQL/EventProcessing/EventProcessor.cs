@@ -1,6 +1,7 @@
 ﻿using CatalogNoSQL.Dto;
 using CatalogNoSQL.Model;
 using CatalogNoSQL.Repository;
+using CatalogNoSQL.Service;
 using System.Text.Json;
 
 namespace CatalogNoSQL.EventProcessing
@@ -161,6 +162,8 @@ namespace CatalogNoSQL.EventProcessing
             using (var scoper = _scopeFactory.CreateScope())
             {
                 var repo = scoper.ServiceProvider.GetRequiredService<IPaperRepository>();
+
+                var repo2 = scoper.ServiceProvider.GetRequiredService<IAzureStorage>();
 
                 var deletedPaperDto = JsonSerializer.Deserialize<PaperDeletedDto>(platformDeletedMessage);
 
