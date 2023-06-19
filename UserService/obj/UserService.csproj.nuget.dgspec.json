@@ -102,6 +102,10 @@
               "target": "Package",
               "version": "[6.4.0, )"
             },
+            "SampleEncryption-ex-1": {
+              "target": "Package",
+              "version": "[1.0.1, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.2.3, )"

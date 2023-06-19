@@ -58,10 +58,11 @@ namespace UserService.RabbitMQ
 
         private void SendMessage(string message)
         {
-            var body = Encoding.UTF8.GetBytes(message);
+            //var body = Encoding.UTF8.GetBytes(message);
+            var body2 = AesEncryption.Encrypt(message);
 
             //_channel.BasicPublish("user", "", null, body);
-            _channel.BasicPublish("user", "UserService", null, body);
+            _channel.BasicPublish("user", "UserService", null, body2);
 
             Console.WriteLine($"We have sent {message}");
         }

@@ -50,7 +50,8 @@ namespace PublishNoSQL.RabbitMQ
                 Console.WriteLine("--> Event Received!");
 
                 var body = ea.Body;
-                var notificationMessage = Encoding.UTF8.GetString(body.ToArray());
+                //var notificationMessage = Encoding.UTF8.GetString(body.ToArray());
+                var notificationMessage = AesEncryption.Decrypt(body.ToArray());
 
                 _eventProcessor.ProcessEvent(notificationMessage);
             };
